@@ -3,6 +3,7 @@ package fa.nfa;
 import fa.State;
 import java.util.LinkedHashSet;
 import java.util.Set;
+import java.util.Stack;
 
 public class NFA implements NFAInterface {
 
@@ -21,60 +22,74 @@ private Set<NFAState> states;
 
     @Override
     public boolean addState(String name) {
-        // TODO: Create and add state if it doesn't exist.
-        return false;
+        if (getState(name) != null) {
+            return false; // State already exists
+        }
+        NFAState newState = new NFAState(name); // Create new state with given name
+        states.add(newState); // Add new state to the set
+        return true; 
+    }
+    @Override
+    public boolean setStart(String name) {
+        NFAState state= (NFAState) getState(name);
+        if (state == null) {
+            return false; // State does not exist
+        }
+        startState = state; // set the start state to current state
+        return true;
     }
 
     @Override
     public boolean setFinal(String name) {
-        // TODO: Find state and mark as final.
-        return false;
+        NFAState state = (NFAState) getState(name);
+        if (state == null) {
+            return false; // State does not exist.
+        }
+        finalStates.add(state); // Add a final state to the set
+        return true;    
     }
 
     @Override
-    public boolean setStart(String name) {
-        // TODO: Find state and set as start state.
-        return false;
+    public boolean isFinal(String name) {
+        State state = getState(name);
+        return state != null && finalStates.contains(state); // Check if current state is in final states set
+    }
+
+    @Override
+    public boolean isStart(String name) {
+        State state = getState(name);
+        return state != null && state.equals(startState); // Check if current state is the designated start state
     }
 
     @Override
     public void addSigma(char symbol) {
-        sigma.add(symbol);
+        sigma.add(symbol); // kinda ez, just adds symbol alphabet 
+    }
+
+    @Override
+    public Set<Character> getSigma() {
+        return sigma; // get alphabet and spit it out
+    }
+
+    @Override
+    public State getState(String name) {
+        for (NFAState state : states) {
+            if (state.getName().equals(name)) { 
+                return state; // return state if its found
+            }
+        }
+        return null;  // return null if state is not found
+      }
+
+    @Override
+    public Set<NFAState> getToState(NFAState from, char onSymb) {
+        return from.getToStates(onSymb); // returns the set of reachable states from currnet state onSymb
     }
 
     @Override
     public boolean accepts(String s) {
         // TODO: BFS traversal to check if string reaches a final state.
         return false;
-    }
-
-    @Override
-    public Set<Character> getSigma() {
-        return sigma;
-    }
-
-    @Override
-    public State getState(String name) {
-        // TODO: Return the matching state or null.
-        return null;
-    }
-
-    @Override
-    public boolean isFinal(String name) {
-        // TODO: Check if state is in your final states collection.
-        return false;
-    }
-
-    @Override
-    public boolean isStart(String name) {
-        // TODO: Check if state matches startState.
-        return false;
-    }
-
-    @Override
-    public Set<NFAState> getToState(NFAState from, char onSymb) {
-        // TODO: Return the state's transitions for this symbol.
-        return null;
     }
 
     @Override
