@@ -297,4 +297,74 @@ public class NFATest {
 		System.out.println("nfa1 maxCopies done");
 	}
 
+	private NFA buildEpsilonChainNFA() {
+		NFA nfa = new NFA();
+		
+		nfa.addSigma('a');
+		nfa.addSigma('b');
+		
+		assertTrue(nfa.addState("start"));
+		assertTrue(nfa.setStart("start"));
+		assertTrue(nfa.addState("mid"));
+		assertTrue(nfa.addState("end"));
+		assertTrue(nfa.setFinal("end"));
+		
+		// creates an infinite epsilon loop: start -> mid -> end -> start
+		assertTrue(nfa.addTransition("start", Set.of("mid"), 'e'));
+		assertTrue(nfa.addTransition("mid", Set.of("end"), 'e'));
+		assertTrue(nfa.addTransition("end", Set.of("start"), 'e'));
+		
+		assertTrue(nfa.addTransition("start", Set.of("start"), 'a'));
+		assertTrue(nfa.addTransition("end", Set.of("end"), 'b'));
+		
+		return nfa;
+	}
+
+	@Test
+	public void testEpsilonChainDFS() {
+		NFA nfa = buildEpsilonChainNFA();
+		assertEquals(nfa.eClosure(nfa.getState("start")), Set.of(nfa.getState("start"), nfa.getState("mid"), nfa.getState("end")));
+		assertFalse(nfa.isDFA());
+	}
+	
+	@Test
+	public void testEpsilonChainAccepts() {
+		NFA nfa = buildEpsilonChainNFA();
+		assertTrue(nfa.accepts("e"));
+		assertTrue(nfa.accepts("a"));
+		assertTrue(nfa.accepts("ab"));
+		assertTrue(nfa.accepts("bb"));
+	}
+
+	private NFA buildStrictDFA() {
+		NFA nfa = new NFA();
+		
+		nfa.addSigma('x');
+		nfa.addSigma('y');
+		
+		assertTrue(nfa.addState("A"));
+		assertTrue(nfa.setStart("A"));
+		assertTrue(nfa.addState("B"));
+		assertTrue(nfa.setFinal("B"));
+		
+		// strict dfa requires zero epsilons and exactly one transition per symbol per state
+		assertTrue(nfa.addTransition("A", Set.of("B"), 'x'));
+		assertTrue(nfa.addTransition("A", Set.of("A"), 'y'));
+		assertTrue(nfa.addTransition("B", Set.of("A"), 'x'));
+		assertTrue(nfa.addTransition("B", Set.of("B"), 'y'));
+		
+		return nfa;
+	}
+
+	@Test
+	public void testStrictDFACheck() {
+		NFA nfa = buildStrictDFA();
+		assertTrue(nfa.isDFA());
+		assertEquals(nfa.eClosure(nfa.getState("A")), Set.of(nfa.getState("A")));
+		
+		assertTrue(nfa.accepts("x"));
+		assertFalse(nfa.accepts("y"));
+		assertTrue(nfa.accepts("xyx"));
+	}
+
 }

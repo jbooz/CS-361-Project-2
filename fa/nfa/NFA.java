@@ -88,31 +88,117 @@ private Set<NFAState> states;
 
     @Override
     public boolean accepts(String s) {
-        // TODO: BFS traversal to check if string reaches a final state.
+        Set<NFAState> currentStates = eClosure(startState); // Start with the epsilon closure of the start state
+
+        for (int i = 0; i < s.length(); i++) {
+            char symbol = s.charAt(i); // Get the current symbol from the input string
+            Set<NFAState> nextStates = new LinkedHashSet<>();  // Create a new set to hold the next states
+
+            for (NFAState state : currentStates) {
+                Set<NFAState> transitions = state.getToStates(symbol); // Get reachable states
+                if (transitions != null) {
+                    for (NFAState next : transitions) {
+                        nextStates.addAll(eClosure(next));
+                    }
+                }
+            }
+            currentStates = nextStates;
+        }
+
+        for (NFAState state : currentStates) {
+            if (finalStates.contains(state)) {
+                return true;
+            }
+        }
         return false;
     }
 
     @Override
     public Set<NFAState> eClosure(NFAState s) {
-        // TODO: DFS with a stack for epsilon ('e') transitions.
-        return null;
+        Set<NFAState> closure = new LinkedHashSet<>();
+        Stack<NFAState> stack = new Stack<>();
+
+        stack.push(s);
+        closure.add(s);
+
+        while (!stack.isEmpty()) {
+            NFAState current = stack.pop();
+            Set<NFAState> eTransitions = current.getToStates('e'); // Get epsilon transitions from the current state
+            
+            if (eTransitions != null) {
+                for (NFAState next : eTransitions) { 
+                    if (!closure.contains(next)) {
+                        closure.add(next); 
+                        stack.push(next);
+                    }
+                }
+            }
+        }
+        return closure;
     }
 
     @Override
     public int maxCopies(String s) {
-        // TODO: Track max active states during BFS trace.
-        return 0; 
+        Set<NFAState> currentStates = eClosure(startState);
+        int max = currentStates.size();
+
+        for (int i = 0; i < s.length(); i++) {
+            char symbol = s.charAt(i);
+            Set<NFAState> nextStates = new LinkedHashSet<>(); // Create a new set to hold the next states
+
+            for (NFAState state : currentStates) {
+                Set<NFAState> transitions = state.getToStates(symbol);
+                if (transitions != null) {
+                    for (NFAState next : transitions) {
+                        nextStates.addAll(eClosure(next));
+                    }
+                }
+            }
+            currentStates = nextStates;
+            
+            if (currentStates.size() > max) {
+                max = currentStates.size();
+            }
+        }
+        return max;
     }
 
-    @Override
+@Override
     public boolean addTransition(String fromState, Set<String> toStates, char onSymb) {
-        // TODO: Validate inputs and link 'from' to 'to' states.
-        return false;
+        NFAState from = (NFAState) getState(fromState);
+        if (from == null) {
+            return false;
+        }
+        
+        if (!sigma.contains(onSymb) && onSymb != 'e') {
+            return false;
+        }
+
+        for (String toName : toStates) {
+            NFAState to = (NFAState) getState(toName);
+            if (to == null) {
+                return false;
+            }
+            from.addTransition(onSymb, to);
+        }
+        return true;
     }
 
     @Override
     public boolean isDFA() {
-        // TODO: Check for zero epsilon transitions and exactly one transition per symbol.
-        return false;
+        for (NFAState state : states) {
+            Set<NFAState> eTrans = state.getToStates('e');
+            if (eTrans != null && !eTrans.isEmpty()) {
+                return false;
+            }
+            
+            for (char symbol : sigma) {
+                Set<NFAState> transitions = state.getToStates(symbol);
+                if (transitions == null || transitions.size() != 1) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 }
