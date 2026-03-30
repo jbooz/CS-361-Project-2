@@ -2,6 +2,7 @@ package fa.nfa;
 
 import fa.State;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -15,11 +16,19 @@ public class NFAState extends State {
     }
 
     public void addTransition(char onSymb, NFAState toState) {
-        // TODO: transition to the map
+        if (transitions.containsKey(onSymb) && !(transitions.get(onSymb).contains(toState)))
+        {
+            transitions.get(onSymb).add(toState);
+        }
+        else if (!(transitions.containsKey(onSymb)))
+        {
+            LinkedHashSet<NFAState> toStates = new LinkedHashSet<>();
+            toStates.add(toState);
+            transitions.put(onSymb, toStates);
+        }
     }
 
     public Set<NFAState> getToStates(char onSymb) {
-        // TODO: returning the set of states for a given symbol
-        return null;
+        return transitions.get(onSymb);
     }
 }
