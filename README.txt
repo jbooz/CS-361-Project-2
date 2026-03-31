@@ -111,15 +111,9 @@ EXTRA CREDIT:
 
 
 SOURCES:
- All sources used outside of lecture notes, slides, and the textbook need to 
- be cited here. If you used websites, used GenAI, asked your dad or your boss 
- or your roommate for help then you must cite those resources. I am not 
- concerned if you use proper APA or MLA or another format as long as you include 
- all relevant information. If it is a person or GenAI that you referenced, be 
- sure to include who you talked to (or which AI you accessed), when you talked 
- to them, and what help they provided (e.g. Student, Awesome. Private 
- communication, 21 January 2026. Discussed how polymorphism allows the return 
- types of methods implemented in a class to be different from the class specified 
- in the interface as long as the <type in implementation> “is-a” <type in interface>.)
+ https://www.geeksforgeeks.org/java/linkedhashset-in-java-with-examples/
+ https://docs.oracle.com/javase/8/docs/api/java/util/LinkedHashSet.html
 
+ Google AI overview/gemini for generic questions typed directly into google since it answers them quicker than clicking on links
+ Edge test cases recommended by gemini but coded by aaron
 ----------------------------------------------------------------------------
