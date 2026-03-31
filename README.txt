@@ -1,60 +1,57 @@
 ****************
-* Project number/name
-* Class
-* Date
-* Your name
+* Project 2 (Nondeterministic Finite Automata)
+* CS 361
+* 3/30/2026
+* Jonathan Boozel and Aaron Eagleton
 **************** 
 
 
 OVERVIEW:
 
 
- Concisely explain what the program does. If this exceeds a couple
- of sentences, you're going too far. The details go in other
- sections.
+ This project represents an implementation of an
+ NFA (Nondeterministic Finite Automata). An NFA is a
+ Finite Automata that isn't Deterministic in nature,
+ meaning when transitioning based on certain character
+ symbols, there are multiple permuations that can be
+ explored that may result in the same or even different
+ solutions. An NFA contains an alphabet, states, and
+ transitions.
 
 
 
 
 INCLUDED FILES:
 
-
- List the files required for the project with a brief
- explanation of why each is included.
-
-
  e.g.
- * Class1.java - source file
- * Class2.java - source file
+ * NFA.java - source file
+ * NFAInterface.java - source file
+ * NFAState.java - source file
+ * FAInterface.java - source file
+ * State.java - source file
+ * NFATest.java - source file
+ * hamcrest-core-1.3.jar - test file
+ * junit-4.13.2.jar - test file
  * README - this file
 
 
 
 
 COMPILING AND RUNNING:
-
-
- Give the command for compiling the program, the command
- for running the program, and any usage instructions the
- user needs.
- 
- These are command-line instructions for a system like onyx.
- They have nothing to do with Eclipse or any other IDE. They
- must be specific - assume the user has Java installed, but
- has no idea how to compile or run a Java program from the
- command-line.
  
  e.g.
  From the directory containing all source files, compile the
  driver class (and all dependencies) with the command:
- $ javac Class1.java
+ $ javac -cp .:/usr/share/java/junit.jar ./test/nfa/NFATest.java
 
 
  Run the compiled class file with the command:
- $ java Class1
+ $ java -cp .:/usr/share/java/junit.jar:/usr/share/java/hamcrest/core.jar
+ org.junit.runner.JUnitCore test.nfa.NFATest
 
 
- Console output will give the results after the program finishes.
+ Results: All test cases passing
+ %RUNTIME22 took 445ms to complete
 
 
 
@@ -62,55 +59,55 @@ COMPILING AND RUNNING:
 PROGRAM DESIGN AND IMPORTANT CONCEPTS:
 
 
- This is the sort of information someone who really wants to
- understand your program - possibly to make future enhancements -
- would want to know.
+ The main goal of this java project is to instantiate a representation of an NFA
+ that follows the same rules and would operate identically to one when given the
+ correct information to support its design. The NFA.java file comprises the main
+ implementation and description of an NFA design, but it is made up of many components
+ that describe its inner workings in greater detail.
+
+ One of these components being the NFAState.java class. This class, when instantiated,
+ is used to represent a state that is associated with the NFA object that, and which
+ contains transitions to and from other states of the same type. An NFAState will differ
+ depending on the character symbol it is associated with, and will be placed within its
+ own set of states accordingly. Fleshing out some of the transition functionality within
+ the NFAState.java file streamlines the program and lifts a bit of the weight off of the
+ shoulders of the main implementation class.
+
+ NFAInterface.java is also used to outline the main functionality of the NFA.java file,
+ and ensures that every NFA is built with specific, useful methods in mind. For example,
+ the interface outlines how every NFA should have a method that defines its eClosure, or
+ all the states that can be transitioned to from the current state when only transitioning
+ via epsilon character symbols.
 
 
- Explain the main concepts and organization of your program so that
- the reader can understand how your program works. This is not a repeat
- of javadoc comments or an exhaustive listing of all methods, but an
- explanation of the critical algorithms and object interactions that make
- up the program.
-
-
- Explain the main responsibilities of the classes and interfaces that make
- up the program. Explain how the classes work together to achieve the program
- goals. If there are critical algorithms that a user should understand, 
- explain them as well.
- 
- If you were responsible for designing the program's classes and choosing
- how they work together, why did you design the program this way? What, if 
- anything, could be improved? 
 
 
 TESTING:
 
 
- How did you test your program to be sure it works and meets all of the
- requirements? What was the testing strategy? What kinds of tests were run?
- Can your program handle bad input? Is your program  idiot-proof? How do you 
- know? What are the known issues / bugs remaining in your program?
+ The testing process was primarily driven by the NFATest.java Junit suite.
+ Custom tests were added to ensure that the code had correctly handled edge cases
+ and specific vulnerabilities encountered while coding. A few of them included a
+ machine with no epsilon, or exactly one transition per symbol and infinite epsilon
+ loops for stress testing its handling of cases and proper eclosure.
 
 
 
 
 DISCUSSION:
  
- Discuss the issues you encountered during programming (development)
- and testing. What problems did you have? What did you have to research
- and learn on your own? What kinds of errors did you get? How did you 
- fix them?
- 
- What parts of the project did you find challenging? Is there anything
- that finally "clicked" for you in the process of working on this project?
+ The most significant roadblock during development was a compiler error regarding the
+ getState method and the eClosure parameter. The provided FAInterface required getState
+ to return a generic State object, but eClosure strictly required an NFAState. Because
+ modifying the interface or the test file was prohibited, originally we had them set up
+ wrong and could not figure out why everything was fine in the files but those few tests
+ that handled those cases. Once we looked at the naming conventions however it became clear
+ and then was a matter of tracking down and changing all of the naming throughout the files.
  
  
 EXTRA CREDIT:
 
-
- If the project had opportunities for extra credit that you attempted,
- be sure to call it out so the grader does not overlook it.
+ N/A
 
 
 SOURCES:
@@ -126,10 +123,3 @@ SOURCES:
  in the interface as long as the <type in implementation> “is-a” <type in interface>.)
 
 ----------------------------------------------------------------------------
-
-
-All content in a README file is expected to be written in clear English with
-proper grammar, spelling, and punctuation. If you are not a strong writer,
-be sure to get someone else to help you with proofreading. Consider all project
-documentation to be professional writing for your boss and/or potential
-customers.
