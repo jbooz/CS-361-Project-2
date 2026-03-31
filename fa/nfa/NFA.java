@@ -72,7 +72,7 @@ private Set<NFAState> states;
     }
 
     @Override
-    public State getState(String name) {
+    public NFAState getState(String name) {
         for (NFAState state : states) {
             if (state.getName().equals(name)) { 
                 return state; // return state if its found
@@ -83,7 +83,7 @@ private Set<NFAState> states;
 
     @Override
     public Set<NFAState> getToState(NFAState from, char onSymb) {
-        return from.getToStates(onSymb); // returns the set of reachable states from currnet state onSymb
+        return from.toStates(onSymb); // returns the set of reachable states from currnet state onSymb
     }
 
     @Override
@@ -95,7 +95,7 @@ private Set<NFAState> states;
             Set<NFAState> nextStates = new LinkedHashSet<>();  // Create a new set to hold the next states
 
             for (NFAState state : currentStates) {
-                Set<NFAState> transitions = state.getToStates(symbol); // Get reachable states
+                Set<NFAState> transitions = state.toStates(symbol); // Get reachable states
                 if (transitions != null) {
                     for (NFAState next : transitions) {
                         nextStates.addAll(eClosure(next));
@@ -123,7 +123,7 @@ private Set<NFAState> states;
 
         while (!stack.isEmpty()) {
             NFAState current = stack.pop();
-            Set<NFAState> eTransitions = current.getToStates('e'); // Get epsilon transitions from the current state
+            Set<NFAState> eTransitions = current.toStates('e'); // Get epsilon transitions from the current state
             
             if (eTransitions != null) {
                 for (NFAState next : eTransitions) { 
@@ -147,7 +147,7 @@ private Set<NFAState> states;
             Set<NFAState> nextStates = new LinkedHashSet<>(); // Create a new set to hold the next states
 
             for (NFAState state : currentStates) {
-                Set<NFAState> transitions = state.getToStates(symbol);
+                Set<NFAState> transitions = state.toStates(symbol);
                 if (transitions != null) {
                     for (NFAState next : transitions) {
                         nextStates.addAll(eClosure(next));
@@ -187,13 +187,13 @@ private Set<NFAState> states;
     @Override
     public boolean isDFA() {
         for (NFAState state : states) {
-            Set<NFAState> eTrans = state.getToStates('e');
+            Set<NFAState> eTrans = state.toStates('e');
             if (eTrans != null && !eTrans.isEmpty()) {
                 return false;
             }
             
             for (char symbol : sigma) {
-                Set<NFAState> transitions = state.getToStates(symbol);
+                Set<NFAState> transitions = state.toStates(symbol);
                 if (transitions == null || transitions.size() != 1) {
                     return false;
                 }

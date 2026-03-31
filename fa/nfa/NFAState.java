@@ -28,7 +28,7 @@ public class NFAState extends State {
         }
     }
 
-    public Set<NFAState> getToStates(char onSymb) {
+    public Set<NFAState> toStates(char onSymb) {
         return transitions.get(onSymb);
     }
 }
