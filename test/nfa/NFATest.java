@@ -364,7 +364,8 @@ public class NFATest {
 		
 		assertTrue(nfa.accepts("x"));
 		assertFalse(nfa.accepts("y"));
-		assertTrue(nfa.accepts("xyx"));
+		assertFalse(nfa.accepts("xyx"));
+		assertTrue(nfa.accepts("xy"));
 	}
 
 }

@@ -56,7 +56,7 @@ public class NFAState extends State {
      * @param onSymb - the character symbol to check the transitions associated with
      * @return the set of states associated with the character symbol
      */
-    public Set<NFAState> getToStates(char onSymb) {
+    public Set<NFAState> toStates(char onSymb) {
         return transitions.get(onSymb);
     }
 }
